@@ -1,0 +1,37 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+int main(){
+    vector<string> inventory({"apples", "banana", "oranges", "pears"});
+    vector<string> ship({"kiwis", "banana", "grapes"});
+    vector<string> out({"apples", "oranges"});
+    
+    cout << "Current Inventory: ";
+    for (const string& item : inventory){
+        cout<< item << ", ";
+    }
+
+    cout <<"\n Shipment: ";
+    for (const string& item : ship){
+        cout<< item << ", ";
+    }
+    cout <<"\n Sold Out: ";
+    for (const string& item : out){
+        cout<< item << ", ";
+    }
+
+    vector<string> combine = inventory;
+    combine.insert(combine.end(), ship.begin(), ship.end());
+    for (const string& item : out)
+    {
+        combine.erase(remove(combine.begin(), combine.end(), item), combine.end());
+    }
+    cout<<" \nUpdated Inventory: ";
+    for(const string& new_inven : combine){
+        cout << new_inven << ", ";
+    }
+    return 0;
+}

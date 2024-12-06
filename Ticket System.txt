@@ -1,0 +1,114 @@
+#include <iostream>
+#include <queue>
+#include <chrono>
+#include <thread>
+#include <string>
+
+using namespace std;
+using namespace chrono;
+
+class Person {
+public:
+    string name;
+    int ticketNumber;
+
+    Person(const string& name, int ticketNumber)
+        : name(name), ticketNumber(ticketNumber) {}
+};
+
+class TicketQueue {
+private:
+    queue<Person> ticketQueue;
+    int ticketCounter = 1;
+
+public:
+    // Enqueue a person (adds to the end of the queue)
+    void enqueue(const string& personName) {
+        Person person(personName, ticketCounter++);
+        ticketQueue.push(person);
+        cout << person.name << " (Ticket #" << person.ticketNumber << ") has joined the queue.\n";
+        cout << "Current queue size: " << ticketQueue.size() << "\n";
+    }
+
+    // Dequeue a person (serves the person at the front of the queue)
+    void dequeue() {
+        if (!ticketQueue.empty()) {
+            Person servedPerson = ticketQueue.front();
+            cout << servedPerson.name << " (Ticket #" << servedPerson.ticketNumber << ") has received their ticket.\n";
+            ticketQueue.pop();
+        } else {
+            cout << "No one is in the queue.\n";
+        }
+    }
+
+    // Check position in queue by ticket number
+    void checkPosition(int ticketNumber) {
+        queue<Person> tempQueue = ticketQueue;
+        int position = 1;
+        bool found = false;
+
+        // Check each person in the queue for position by ticket number
+        while (!tempQueue.empty()) {
+            if (tempQueue.front().ticketNumber == ticketNumber) {
+                cout << tempQueue.front().name << " is at position " << position 
+                     << " with Ticket #" << ticketNumber << " in the queue.\n";
+                found = true;
+                break;
+            }
+            tempQueue.pop();
+            position++;
+        }
+
+        if (!found) {
+            cout << "Ticket #" << ticketNumber << " is not in the queue.\n";
+        }
+    }
+
+    // Start serving tickets every minute automatically
+    void startAutoServe() {
+        while (true) {
+            this_thread::sleep_for(minutes(1));
+            dequeue();
+        }
+    }
+};
+
+int main() {
+    TicketQueue queue;
+    int choice;
+    string name;
+    int ticketNumber;
+
+    // Run a separate thread for auto-serving
+    thread autoServeThread(&TicketQueue::startAutoServe, &queue);
+
+    // Main menu
+    while (true) {
+        cout << "\nWelcome to Olivia Rodrigo's Concert Ticket System!!!\n";
+        cout << "1. Enqueue a person\n";
+        cout << "2. Check position in queue by ticket number\n";
+        cout << "3. Exit\n";
+        cout << "Choose an option: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter the person's name to enqueue: ";
+                cin >> name;
+                queue.enqueue(name);
+                break;
+            case 2:
+                cout << "Enter the ticket number to check position: ";
+                cin >> ticketNumber;
+                queue.checkPosition(ticketNumber);
+                break;
+            case 3:
+                cout << "Exiting...\n";
+                autoServeThread.detach(); // Detach auto-serve thread before exit
+                return 0;
+            default:
+                cout << "Invalid option. Try again.\n";
+                break;
+        }
+    }
+}

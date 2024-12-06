@@ -1,0 +1,16 @@
+COOKING FRIED EGG PSEUDOCODE
+
+    GRAB an egg from the fridge
+    SET pan onto stove
+    TURN on stove to medium heat
+    ADD oil onto the pan
+    WAIT till oil is hot
+    CRACK egg onto a small bowl
+    ADD salt to taste
+    POUR egg onto pan
+    COOK for 2-3 minutes or until edges are crispy
+    OPTIONALLY flip egg for a firmer yolk
+    TURN off heat
+    REMOVE egg from the pan
+    PUT egg on plate
+    SERVE and enjoy
